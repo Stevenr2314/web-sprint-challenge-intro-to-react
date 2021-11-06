@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import './App.css';
 import Character from './components/Character'
+import lukeImg from './images/LukeSkywalker.png'
 
 const App = () => {
   // Try to think through what state you'll need for this app before starting. Then build out
@@ -13,6 +14,7 @@ const App = () => {
   // sync up with, if any.
 
   const [characters, setCharacters] = useState([])
+  const [currentChar, setCurrentChar] = useState('Luke Skywalker')
 
   useEffect(() => {
     axios.get('https://swapi.dev/api/people')
@@ -20,12 +22,13 @@ const App = () => {
       setCharacters(resp.data)
     })
     .catch(err => console.log(err))
-  }, [])
+  }, [currentChar])
 
+  console.log(characters)
   return (
     <div className="App">
       <h1 className="Header">Characters</h1>
-      <Character characters={characters}></Character>
+      <Character characters={characters} currentChar={currentChar} lukeImg={lukeImg}></Character>
     </div>
   );
 }
