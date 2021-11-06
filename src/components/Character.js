@@ -77,6 +77,24 @@ const getCharacter = (characters, name) => {
    return selectedCharacter;
 }
 
+
+const handleClick = (direction, charNameList, charIndex, setCharacterIndex, setCurrentChar) => {
+    if(charIndex < charNameList.length-1 && direction==='fwrd'){
+        setCharacterIndex(charIndex + 1)
+        console.log(`Index updated to ${charIndex}`)
+    } else if (charIndex >= 0 && direction === 'back') {
+        setCharacterIndex(charIndex - 1)
+        console.log(`Index updated to ${charIndex}`)
+        if(charIndex === 0){
+            setCharacterIndex(charNameList.length-1)
+        }
+    }else {
+        setCharacterIndex(0)
+        console.log(`Index has been reset to ${charIndex}`)
+    }
+    setCurrentChar(charNameList[charIndex])
+}
+
 const characterAttr = (character) => {
     const characterEntries = Object.entries(character).slice(1,7)
     const listCharacterAttr = characterEntries.map( ([key, value]) => (
@@ -87,24 +105,33 @@ const characterAttr = (character) => {
 
     return <ul>{listCharacterAttr}</ul>
 }
+
 const Character = props =>
 {
-    const {characters, currentChar, lukeImg} = props;
-    return (
-        <CharacterWrapper>
-            <ImageWrapper>
-                <ImageButton>⬅</ImageButton>
-                <CharacterImage src={lukeImg} alt={'Luke Skywalker'}/>
-                <ImageButton>➡</ImageButton>
-            </ImageWrapper>
-            <CharInfoDiv>
-                    <CharacterName>{currentChar}</CharacterName>
-                    <CharacterInfoList>
-                        {characterAttr(getCharacter(characters, currentChar)[0])}
-                    </CharacterInfoList>
-                </CharInfoDiv>
-        </CharacterWrapper>
-    );
+    const {characters, currentChar, setCurrentChar, lukeImg, characterIndex, setCharacterIndex} = props;
+    if (!characters){
+        return( 
+            <h1>LOADING</h1>
+        )
+    } else {
+        const charNameList = characters.map(character => character.name)
+        return (
+            <CharacterWrapper>
+                <ImageWrapper>
+                    <ImageButton onClick={ () => handleClick('back', charNameList, characterIndex, setCharacterIndex, setCurrentChar)}>⬅</ImageButton>
+                    <CharacterImage src={lukeImg} alt={'Luke Skywalker'}/>
+                    <ImageButton onClick={ () => handleClick('fwrd', charNameList, characterIndex, setCharacterIndex, setCurrentChar)}>➡</ImageButton>
+                </ImageWrapper>
+                <CharInfoDiv>
+                        <CharacterName>{currentChar}</CharacterName>
+                        <CharacterInfoList>
+                            {characterAttr(getCharacter(characters, currentChar)[0])}
+                        </CharacterInfoList>
+                    </CharInfoDiv>
+            </CharacterWrapper>
+        );
+    }
+    
 }
 
 export default Character;
